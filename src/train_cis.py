@@ -62,7 +62,7 @@ cfg.MODEL.RESNETS.AVG_DOWN = False
 cfg.MODEL.RESNETS.BOTTLENECK_WIDTH = 64
 
 
-cfg.merge_from_file(f"{ROOT_FOLDER}/configs/detectron2-ResNeSt-resnest/configs/mask_rcnn_ResNeSt200.yaml")
+cfg.merge_from_file(f"{ROOT_FOLDER}/configs/mask_rcnn_ResNeSt200.yaml")
 cfg.DATASETS.TRAIN = ("sartorius_train",)
 cfg.DATASETS.TEST = ("sartorius_train", "sartorius_val")
 cfg.DATALOADER.NUM_WORKERS = 4
