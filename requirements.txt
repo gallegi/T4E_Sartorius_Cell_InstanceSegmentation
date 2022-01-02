@@ -2,7 +2,6 @@ opencv-python
 matplotlib
 pandas 
 numpy
-pickle
 pycocotools
 tqdm
 sklearn
