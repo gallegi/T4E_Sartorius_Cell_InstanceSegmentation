@@ -66,12 +66,11 @@ cfg.merge_from_file(f"{ROOT_FOLDER}/configs/mask_rcnn_ResNeSt200.yaml")
 cfg.DATASETS.TRAIN = ("sartorius_train",)
 cfg.DATASETS.TEST = ("sartorius_train", "sartorius_val")
 cfg.DATALOADER.NUM_WORKERS = 4
-cfg.MODEL.WEIGHTS = "http://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/models/Anchor_free/ALL/LIVECell_anchor_free_model.pth"
+cfg.MODEL.WEIGHTS = "https://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/models/Anchor_based/ALL/LIVECell_anchor_based_model.pth"
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.003
 cfg.SOLVER.MAX_ITER = 30000    
 cfg.SOLVER.CHECKPOINT_PERIOD = 1000
-# cfg.TEST.EVAL_PERIOD = len(train_ds) // cfg.SOLVER.IMS_PER_BATCH
 cfg.TEST.EVAL_PERIOD = 1000
 cfg.SOLVER.STEPS = ( 20000,)        
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 1024   
