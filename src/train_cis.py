@@ -4,7 +4,6 @@ from utils.train_net import Trainer
 from utils.general import seed_torch
 seed_torch(67)
 
-import detectron2
 from pathlib import Path
 import random, cv2, os
 import matplotlib.pyplot as plt
@@ -15,8 +14,6 @@ from detectron2.config import get_cfg, CfgNode
 from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets import register_coco_instances
-
-# from detectron2.modeling.backbone import fpn_resneSt
 
 cfg = get_cfg()
 ROOT_FOLDER = './'
@@ -43,7 +40,7 @@ visualizer = Visualizer(img[:, :, ::-1], metadata=metadata)
 out = visualizer.draw_dataset_dict(d)
 plt.figure(figsize = (20,15))
 plt.imshow(out.get_image()[:, :, ::-1])
-
+plt.show()
 
 d = valid_ds[0]
 img = cv2.imread(d["file_name"])
@@ -51,6 +48,7 @@ visualizer = Visualizer(img[:, :, ::-1], metadata=metadata)
 out = visualizer.draw_dataset_dict(d)
 plt.figure(figsize = (20,15))
 plt.imshow(out.get_image()[:, :, ::-1])
+plt.show()
 # ==================================
 
 # ======== Configuration =========
@@ -60,7 +58,6 @@ cfg.MODEL.RESNETS.AVD = False
 # Apply avg_down to the downsampling layer for residual path 
 cfg.MODEL.RESNETS.AVG_DOWN = False
 cfg.MODEL.RESNETS.BOTTLENECK_WIDTH = 64
-
 
 cfg.merge_from_file(f"{ROOT_FOLDER}/configs/mask_rcnn_ResNeSt200.yaml")
 cfg.DATASETS.TRAIN = ("sartorius_train",)
