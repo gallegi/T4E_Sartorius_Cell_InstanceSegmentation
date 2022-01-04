@@ -2,7 +2,7 @@ MODEL:
   META_ARCHITECTURE: "GeneralizedRCNN"
   WEIGHTS: "https://s3.us-west-1.wasabisys.com/resnest/detectron/mask_cascade_rcnn_ResNeSt_200_FPN_dcn_syncBN_all_tricks_3x-e1901134.pth"
   BACKBONE:
-    NAME: "build_resnet_fpn_backbone"
+    NAME: "build_resneSt_fpn_backbone"
     FREEZE_AT: 2
   MASK_ON: True
   RESNETS:

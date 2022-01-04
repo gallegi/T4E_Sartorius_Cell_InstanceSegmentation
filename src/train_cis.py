@@ -14,6 +14,7 @@ from detectron2.config import get_cfg, CfgNode
 from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets import register_coco_instances
+from detectron2.modeling.backbone import fpn_resneSt # import to register resneSt backbone
 
 cfg = get_cfg()
 ROOT_FOLDER = './'
