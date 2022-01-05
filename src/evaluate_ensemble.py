@@ -282,8 +282,8 @@ for d in tqdm(valid_ds, total=len(valid_ds)):
     list_inst_counts.append(len(d['annotations']))
     list_im_ids.append(d['image_id'])
     i+=1
-    if(i > 3):
-        break
+    # if(i > 3):
+    #     break
 
 import pandas as pd
 result_df = pd.DataFrame({'image_id':list_im_ids, 'cell_type':list_cell_types, 'inst_count':list_inst_counts,
@@ -292,7 +292,7 @@ result_df = pd.DataFrame({'image_id':list_im_ids, 'cell_type':list_cell_types, '
 print('Result by each cell type (average precision IOU@0.5:0.95):')
 print(result_df.groupby('cell_type').AP.sum() / len(result_df))
 
-print('Result (average precision IOU@0.5:0.95):')
+print('\nResult (average precision IOU@0.5:0.95):')
 print(result_df.AP.mean())
 
 

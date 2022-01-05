@@ -105,7 +105,7 @@ result_df = pd.DataFrame({'image_id':list_im_ids, 'cell_type':list_cell_types, '
 print('Result by each cell type (average precision IOU@0.5:0.95):')
 print(result_df.groupby('cell_type').AP.sum() / len(result_df))
 
-print('Result (average precision IOU@0.5:0.95):')
+print('\nResult (average precision IOU@0.5:0.95):')
 print(result_df.AP.mean())
 
 # outpath = f'{ROOT_FOLDER}/analysis_log/{cfg.OUTPUT_DIR.split("/")[-1]}/valid_results.csv'
