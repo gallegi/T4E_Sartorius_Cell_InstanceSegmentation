@@ -33,12 +33,12 @@ from tqdm import tqdm
 import argparse
 
 parser = argparse.ArgumentParser(description='Some argument')
-parser.add_argument('--weights', type=str, default='models/pretrained_models/pseudo_round2_model.pth',
+parser.add_argument('--weights', type=str, default='models/pretrained_models/pseudo_round1_model.pth;models/pretrained_models/pseudo_round2_model.pth',
                     help='Path to pth weight')
 
 args = parser.parse_args()
 
-print(args.weights)
+print(args.weights.split(';'))
 
 ROOT_FOLDER = './'
 ANN_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/annotations'
@@ -245,7 +245,7 @@ valid_ds = DatasetCatalog.get('sartorius_val')
 list_cfgs = []
 list_predictors = []
 
-for weight in args.weight.split(' '):
+for weight in args.weights.split(';'):
     cfg = get_config(cfg)
     predictor = DefaultPredictor(cfg)
     list_cfgs.append(cfg)
