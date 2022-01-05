@@ -1,0 +1,5 @@
+# round 1 weights
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1K-VHE4SPybakkm5vpwUT7RK367SJU0Ky' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1K-VHE4SPybakkm5vpwUT7RK367SJU0Ky" -O models/pretrained_models/pseudo_round1_model.pth && rm -rf /tmp/cookies.txt
+
+# round 2 weights
+wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=14MxtNPxWkbwIft-5mqwG1EEz-oC18VpQ' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=14MxtNPxWkbwIft-5mqwG1EEz-oC18VpQ" -O models/pretrained_models/pseudo_round2_model.pth && rm -rf /tmp/cookies.txt
