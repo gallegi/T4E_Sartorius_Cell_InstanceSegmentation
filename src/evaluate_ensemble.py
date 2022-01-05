@@ -24,6 +24,7 @@ from contextlib import contextmanager
 from itertools import count
 import itertools
 
+import numpy as np
 import torch
 
 from utils.postprocessing import post_process_output
