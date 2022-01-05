@@ -80,7 +80,6 @@ list_inst_counts = []
 list_im_ids = []
 
 i = 0
-# for d in tqdm(train_ds, total=len(train_ds)):
 for d in tqdm(valid_ds, total=len(valid_ds)):
     im = cv2.imread(d['file_name'])
     
@@ -99,7 +98,6 @@ for d in tqdm(valid_ds, total=len(valid_ds)):
     list_inst_counts.append(len(d['annotations']))
     list_im_ids.append(d['image_id'])
     i+=1
-#     break
 
 result_df = pd.DataFrame({'image_id':list_im_ids, 'cell_type':list_cell_types, 'inst_count':list_inst_counts,
                             'AP':list_APs, 'TP':list_TPs, 'FP':list_FPs, 'FN':list_FNs,'log':list_logs})
