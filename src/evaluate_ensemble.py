@@ -27,7 +27,7 @@ import itertools
 import numpy as np
 import torch
 
-from utils.postprocessing import post_process_output
+from utils.postprocessing import post_process_output, custom_nms
 from utils.metric_by_outputs import calculate_AP
 
 from tqdm import tqdm
