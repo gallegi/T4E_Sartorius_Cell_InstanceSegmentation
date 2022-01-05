@@ -263,10 +263,9 @@ list_im_ids = []
 
 i = 0
 for d in tqdm(valid_ds, total=len(valid_ds)):
-    default_thresh[CLASS_ID] = thresh
     outputs =  ensemble(d, 
                     list_cfgs, 
-                list_predictors,
+                    list_predictors,
                     conf_thresh=FINAL_THRESH)
     
     calculate_AP(outputs, d['annotations'])
