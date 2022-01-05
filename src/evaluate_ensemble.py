@@ -246,7 +246,7 @@ list_cfgs = []
 list_predictors = []
 
 for weight in args.weights.split(' '):
-    cfg = get_config(cfg)
+    cfg = get_config(weight)
     predictor = DefaultPredictor(cfg)
     list_cfgs.append(cfg)
     list_predictors.append(predictor)
