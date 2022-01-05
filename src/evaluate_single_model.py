@@ -10,9 +10,12 @@ from detectron2.config import get_cfg, CfgNode
 from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets import register_coco_instances
-
 from detectron2.modeling.backbone import fpn_resneSt
 
+from utils.postprocessing import post_process_output
+from utils.metric_by_outputs import calculate_AP
+
+from tqdm import tqdm
 import argparse
 
 parser = argparse.ArgumentParser(description='Some argument')
@@ -59,9 +62,54 @@ cfg.INPUT.MAX_SIZE_TEST = 2000
 cfg.MODEL.WEIGHTS = args.weight
 cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.99
 cfg.CUSTOM = CfgNode()
-cfg.CUSTOM.THRESHOLDS = [0.3,0.5,0.6]
 cfg.CUSTOM.NMS_THRESH = [0.1,0.1,0.1]
 cfg.TEST.DETECTIONS_PER_IMAGE = 10000
 
 
 predictor = DefaultPredictor(cfg)
+
+cfg.CUSTOM.THRESHOLDS = [0.5,0.7,0.8]
+
+list_APs = []
+list_TPs = []
+list_FPs = []
+list_FNs = []
+list_logs = []
+list_cell_types = []
+list_inst_counts = []
+list_im_ids = []
+
+i = 0
+# for d in tqdm(train_ds, total=len(train_ds)):
+for d in tqdm(valid_ds, total=len(valid_ds)):
+    im = cv2.imread(d['file_name'])
+    
+    outputs = predictor(im)  
+    outputs = post_process_output(cfg, outputs)
+    calculate_AP(outputs, d['annotations'])
+    AP, TP, FP, FN, log = calculate_AP(outputs, d['annotations'])
+
+    list_APs.append(AP)
+    list_logs.append(log)
+    list_TPs.append(TP)
+    list_FPs.append(FP)
+    list_FNs.append(FN)
+    
+    list_cell_types.append(d['annotations'][0]['category_id'])
+    list_inst_counts.append(len(d['annotations']))
+    list_im_ids.append(d['image_id'])
+    i+=1
+#     break
+
+result_df = pd.DataFrame({'image_id':list_im_ids, 'cell_type':list_cell_types, 'inst_count':list_inst_counts,
+                            'AP':list_APs, 'TP':list_TPs, 'FP':list_FPs, 'FN':list_FNs,'log':list_logs})
+
+print('Result by each cell type (average precision IOU@0.5:0.95):')
+print(result_df.groupby('cell_type').AP.sum() / len(result_df))
+
+print('Result (average precision IOU@0.5:0.95):')
+print(result_df.AP.mean())
+
+# outpath = f'{ROOT_FOLDER}/analysis_log/{cfg.OUTPUT_DIR.split("/")[-1]}/valid_results.csv'
+# os.makedirs(os.path.dirname(outpath),exist_ok=True)
+# result_df.to_csv(outpath, index=False)
