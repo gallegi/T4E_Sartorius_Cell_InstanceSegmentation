@@ -10,4 +10,4 @@ python -m pip install  --upgrade detectron2 -f https://dl.fbaipublicfiles.com/de
 pip install -r requirements.txt
 
 # 4. Make detectron2 works with ResNeSt200
-python add_resnest2.py
+python add_resnest200.py
