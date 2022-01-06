@@ -24,7 +24,7 @@ parser.add_argument('--weight', type=str, default='models/pretrained_models/pseu
 
 args = parser.parse_args()
 
-print(args.weight)
+print('Model weight:', args.weight)
 
 cfg = get_cfg()
 ROOT_FOLDER = './'
