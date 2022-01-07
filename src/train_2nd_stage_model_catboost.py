@@ -164,6 +164,9 @@ valid_df['pred_FP'] = valid_df['pred_iou'] < 0.3
 train_precision = precision_score(train_df['FP'], train_df['pred_FP'])
 valid_precision = precision_score(valid_df['FP'], valid_df['pred_FP'])
 
+print('Number of predicted FP on train set:', train_df['pred_FP'].sum())
+print('Number of predicted FP on valid set:', valid_df['pred_FP'].sum())
+
 print('Train precision:', train_precision)
 print('Valid precision:', valid_precision)
 
