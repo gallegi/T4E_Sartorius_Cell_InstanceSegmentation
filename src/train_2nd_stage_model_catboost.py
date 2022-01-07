@@ -49,7 +49,7 @@ train_df = pd.DataFrame()
 
 i = 0
 for d in tqdm(valid_ds1, total=len(valid_ds1)):
-    PKL_FOLDER = get_pkl_folder(d)
+    PKL_FOLDER = get_pkl_folder()
     path = f'{PKL_FOLDER}/{d["image_id"]}.pkl'
     
     im = cv2.imread(d['file_name'])
@@ -76,7 +76,7 @@ valid_df = pd.DataFrame()
 
 i = 0
 for d in tqdm(valid_ds2, total=len(valid_ds2)):
-    PKL_FOLDER = get_pkl_folder(d)
+    PKL_FOLDER = get_pkl_folder()
     path = f'{PKL_FOLDER}/{d["image_id"]}.pkl'
     
     im = cv2.imread(d['file_name'])
