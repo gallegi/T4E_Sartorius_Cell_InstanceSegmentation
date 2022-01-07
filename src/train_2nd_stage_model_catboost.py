@@ -67,9 +67,9 @@ for d in tqdm(valid_ds1, total=len(valid_ds1)):
     
     train_df = pd.concat([train_df, features], axis=0)
 
-    i+=1
-    if i == 10:
-        break
+    # i+=1
+    # if i == 10:
+    #     break
 
 
 valid_df = pd.DataFrame()
@@ -93,9 +93,9 @@ for d in tqdm(valid_ds2, total=len(valid_ds2)):
     
     valid_df = pd.concat([valid_df, features], axis=0)
 
-    i+=1
-    if i == 10:
-        break
+    # i+=1
+    # if i == 10:
+    #     break
 
 print('Number of instance on train set:', len(train_df))
 print('Number of instance on valid set:', len(valid_df))
