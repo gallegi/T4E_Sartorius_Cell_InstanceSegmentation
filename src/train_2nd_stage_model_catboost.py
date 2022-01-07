@@ -164,11 +164,13 @@ valid_df['pred_FP'] = valid_df['pred_iou'] < 0.3
 train_precision = precision_score(train_df['FP'], train_df['pred_FP'])
 valid_precision = precision_score(valid_df['FP'], valid_df['pred_FP'])
 
+print('Train precision:', train_precision)
+print('Valid precision:', valid_precision)
 
 all_df = pd.concat([train_df, valid_df], axis=0)
 model.fit(all_df[X_cols2].fillna(-1), all_df[y_col])
 
-with open(os.path.join('stage2_model/', f'catboost.pkl'), 'wb') as f:
+with open(os.path.join('2nd_level_model/', f'catboost.pkl'), 'wb') as f:
     pickle.dump(model, f)
 
-pd.DataFrame(X_cols2, columns=['features']).to_csv(os.path.join('stage2_model/', f'features.csv'), index=False)
+pd.DataFrame(X_cols2, columns=['features']).to_csv(os.path.join('2nd_level_model/', f'features.csv'), index=False)
