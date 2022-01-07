@@ -2,9 +2,15 @@ import pycocotools.mask as mask_util
 import numpy as np
 import torch
 
+import pycocotools.mask as mask_util
+
 def custom_nms(pred, nms_thresh=0.5):
     pred_masks = pred['instances'].pred_masks.detach().cpu().numpy()
     scores = pred['instances'].scores.detach().cpu().numpy()
+    # print(pred_masks.dtype)
+    if(pred_masks.dtype == np.float32):
+        pred_masks = (pred_masks >= 0.5 ).astype('bool')
+        # print(pred_masks.dtype)
 
     # calculate IOU
     enc_preds = [mask_util.encode(np.asarray(p, order='F')) for p in pred_masks]
@@ -33,7 +39,6 @@ def custom_nms(pred, nms_thresh=0.5):
     new_pred = pred.copy()
     new_pred['instances'] = new_pred['instances'][keeps]
     return new_pred
-
 
 def post_process_output(cfg, outputs):
     # filter by score
