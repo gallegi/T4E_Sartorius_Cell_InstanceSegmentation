@@ -18,7 +18,7 @@ from utils.metric_by_outputs import calculate_AP
 from tqdm import tqdm
 import argparse
 
-parser = argparse.ArgumentParser(description='Some argument')
+parser = argparse.ArgumentParser(description='Some arguments')
 parser.add_argument('--weight', type=str, default='models/pretrained_models/pseudo_round2_model.pth',
                     help='Path to pth weight')
 

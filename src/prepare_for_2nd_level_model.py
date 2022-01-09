@@ -22,9 +22,9 @@ from utils.ensemble import ensemble
 from tqdm import tqdm
 import argparse
 
-parser = argparse.ArgumentParser(description='Some argument')
+parser = argparse.ArgumentParser(description='Some arguments')
 parser.add_argument('--weights', type=str, default='models/pretrained_models/pseudo_round1_model.pth models/pretrained_models/pseudo_round2_model.pth',
-                    help='Provide paths to weight separated by a space')
+                    help='Paths to weight separated by a space')
 
 args = parser.parse_args()
 
