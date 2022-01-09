@@ -95,7 +95,6 @@ outputs =  ensemble(input_dict,
                 list_cfgs, 
                 list_predictors,
                 conf_thresh=FINAL_THRESH)
-
 v = Visualizer(im[:, :, ::-1],
                    metadata = Metadata(thing_classes=['shsy5y', 'astro', 'cort']), 
                    instance_mode=ColorMode.IMAGE_BW
@@ -104,4 +103,6 @@ out_pred = v.draw_instance_predictions(outputs["instances"].to("cpu"))
 
 out_name = args.image.split('/')[-1]
 out_path = os.path.join('demo_outputs/', out_name)
-plt.savefig(out_path)
+
+draw = out_pred.get_image()[:, :, ::-1]
+cv2.imwrite(out_path, draw)
