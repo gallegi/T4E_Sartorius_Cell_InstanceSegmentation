@@ -90,7 +90,8 @@ for weight in args.weights.split(' '):
     list_predictors.append(predictor)
 
 im = cv2.imread(args.image)
-outputs =  ensemble(args.image, 
+input_dict = {'file_name':args.image, 'height':520, 'width':704}
+outputs =  ensemble(input_dict, 
                 list_cfgs, 
                 list_predictors,
                 conf_thresh=FINAL_THRESH)
