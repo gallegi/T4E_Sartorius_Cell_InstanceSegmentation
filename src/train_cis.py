@@ -16,14 +16,24 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets import register_coco_instances
 from detectron2.modeling.backbone import fpn_resneSt # import to register resneSt backbone
 
-cfg = get_cfg()
-ROOT_FOLDER = './'
-ANN_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/annotations'
-DATA_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/images'
-FOLD = 0
-cfg.OUTPUT_DIR = f'{ROOT_FOLDER}/models/maskrcnn_ResNeSt200_pseudo_round2_fold{FOLD}'
+import argparse
 
-dataDir=Path(DATA_DIR)
+ROOT_FOLDER = './'
+FOLD = 0
+
+parser = argparse.ArgumentParser(description='Some arguments')
+parser.add_argument('--data_dir', type=str, default=f'{ROOT_FOLDER}/data/annotation_semisupervised_round2',
+                    help='Path to data folder')
+parser.add_argument('--out_dir', type=str, default=f'{ROOT_FOLDER}/models/maskrcnn_ResNeSt200_pseudo_round2_fold{FOLD}',
+                    help='Path to output folder where trained weights will be saved')
+args = parser.parse_args()
+
+cfg = get_cfg()
+ANN_DIR = f'{args.data_dir}/annotations'
+IMAGE_DIR = f'{args.data_dir}/images'
+cfg.OUTPUT_DIR = args.out_dir
+
+dataDir=Path(IMAGE_DIR)
 
 # ====== Register datasets =======
 cfg.INPUT.MASK_FORMAT='bitmask'
