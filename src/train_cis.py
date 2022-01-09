@@ -18,7 +18,6 @@ from detectron2.modeling.backbone import fpn_resneSt # import to register resneS
 
 import argparse
 
-ROOT_FOLDER = './'
 FOLD = 0
 
 parser = argparse.ArgumentParser(description='Some arguments')
@@ -26,7 +25,7 @@ parser.add_argument('--image_dir', type=str, default=f'data/images',
                     help='Path to image folder')
 parser.add_argument('--annotation_dir', type=str, default=f'data/annotations_semi_supervised_round2',
                     help='Path to annotation folder')
-parser.add_argument('--out_dir', type=str, default=f'{ROOT_FOLDER}/models/maskrcnn_ResNeSt200_pseudo_round2_fold{FOLD}',
+parser.add_argument('--out_dir', type=str, default=f'models/maskrcnn_ResNeSt200_pseudo_round2_fold{FOLD}',
                     help='Path to output folder where trained weights will be saved')
 args = parser.parse_args()
 
@@ -46,24 +45,6 @@ train_ds = DatasetCatalog.get('sartorius_train')
 valid_ds = DatasetCatalog.get('sartorius_val')
 # ================================
 
-# ======= Visualize examples ========
-d = train_ds[0]
-img = cv2.imread(d["file_name"])
-visualizer = Visualizer(img[:, :, ::-1], metadata=metadata)
-out = visualizer.draw_dataset_dict(d)
-plt.figure(figsize = (20,15))
-plt.imshow(out.get_image()[:, :, ::-1])
-plt.show()
-
-d = valid_ds[0]
-img = cv2.imread(d["file_name"])
-visualizer = Visualizer(img[:, :, ::-1], metadata=metadata)
-out = visualizer.draw_dataset_dict(d)
-plt.figure(figsize = (20,15))
-plt.imshow(out.get_image()[:, :, ::-1])
-plt.show()
-# ==================================
-
 # ======== Configuration =========
 cfg.MODEL.RESNETS.RADIX = 1
 cfg.MODEL.RESNETS.DEEP_STEM = False
@@ -72,7 +53,7 @@ cfg.MODEL.RESNETS.AVD = False
 cfg.MODEL.RESNETS.AVG_DOWN = False
 cfg.MODEL.RESNETS.BOTTLENECK_WIDTH = 64
 
-cfg.merge_from_file(f"{ROOT_FOLDER}/configs/mask_rcnn_ResNeSt200.yaml")
+cfg.merge_from_file(f"configs/mask_rcnn_ResNeSt200.yaml")
 cfg.DATASETS.TRAIN = ("sartorius_train",)
 cfg.DATASETS.TEST = ("sartorius_train", "sartorius_val")
 cfg.DATALOADER.NUM_WORKERS = 4
