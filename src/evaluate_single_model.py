@@ -19,6 +19,10 @@ from tqdm import tqdm
 import argparse
 
 parser = argparse.ArgumentParser(description='Some arguments')
+parser.add_argument('--image_dir', type=str, default=f'data/images',
+                    help='Path to image folder')
+parser.add_argument('--annotation_dir', type=str, default=f'data/annotations_semi_supervised_round2',
+                    help='Path to annotation folder')
 parser.add_argument('--weight', type=str, default='models/pretrained_models/pseudo_round2_model.pth',
                     help='Path to pth weight')
 
@@ -27,16 +31,15 @@ args = parser.parse_args()
 print('Model weight:', args.weight)
 
 cfg = get_cfg()
-ROOT_FOLDER = './'
 
-ANN_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/annotations'
-DATA_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/images'
+ANN_DIR = args.annotation_dir
+IMAGE_DIR = args.image_dir
 FOLD = 0
 
-dataDir=Path(DATA_DIR)
+dataDir=Path(IMAGE_DIR)
 
 cfg.INPUT.MASK_FORMAT='bitmask'
-register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/valid/annotations_valid_{FOLD}.json', dataDir)
+register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/annotations_valid_{FOLD}.json', dataDir)
 metadata = MetadataCatalog.get('sartorius_val')
 valid_ds = DatasetCatalog.get('sartorius_val')
 
@@ -48,7 +51,7 @@ cfg.MODEL.RESNETS.AVG_DOWN = False
 cfg.MODEL.RESNETS.BOTTLENECK_WIDTH = 64
 
 
-cfg.merge_from_file(f"{ROOT_FOLDER}/configs/mask_rcnn_ResNeSt200.yaml")
+cfg.merge_from_file(f"configs/mask_rcnn_ResNeSt200.yaml")
 cfg.DATASETS.TRAIN = ("sartorius_train",)
 cfg.DATASETS.TEST = ("sartorius_train", "sartorius_val")
 cfg.DATALOADER.NUM_WORKERS = 4
