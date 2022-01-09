@@ -89,8 +89,8 @@ for weight in args.weights.split(' '):
     list_cfgs.append(cfg)
     list_predictors.append(predictor)
 
-im = cv2.imread(args.images)
-outputs =  ensemble(args.images, 
+im = cv2.imread(args.image)
+outputs =  ensemble(args.image, 
                 list_cfgs, 
                 list_predictors,
                 conf_thresh=FINAL_THRESH)
