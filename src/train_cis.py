@@ -31,7 +31,7 @@ parser.add_argument('--out_dir', type=str, default=f'{ROOT_FOLDER}/models/maskrc
 args = parser.parse_args()
 
 cfg = get_cfg()
-ANN_DIR = args.data_dir
+ANN_DIR = args.annotation_dir
 IMAGE_DIR = args.image_dir
 cfg.OUTPUT_DIR = args.out_dir
 
