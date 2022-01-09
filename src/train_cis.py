@@ -22,23 +22,25 @@ ROOT_FOLDER = './'
 FOLD = 0
 
 parser = argparse.ArgumentParser(description='Some arguments')
-parser.add_argument('--data_dir', type=str, default=f'{ROOT_FOLDER}/data/annotation_semisupervised_round2',
-                    help='Path to data folder')
+parser.add_argument('--image_dir', type=str, default=f'data/images',
+                    help='Path to image folder')
+parser.add_argument('--annotation_dir', type=str, default=f'data/annotations_semi_supervised_round2',
+                    help='Path to annotation folder')
 parser.add_argument('--out_dir', type=str, default=f'{ROOT_FOLDER}/models/maskrcnn_ResNeSt200_pseudo_round2_fold{FOLD}',
                     help='Path to output folder where trained weights will be saved')
 args = parser.parse_args()
 
 cfg = get_cfg()
-ANN_DIR = f'{args.data_dir}/annotations'
-IMAGE_DIR = f'{args.data_dir}/images'
+ANN_DIR = args.data_dir
+IMAGE_DIR = args.image_dir
 cfg.OUTPUT_DIR = args.out_dir
 
 dataDir=Path(IMAGE_DIR)
 
 # ====== Register datasets =======
 cfg.INPUT.MASK_FORMAT='bitmask'
-register_coco_instances('sartorius_train',{}, f'{ANN_DIR}/train/annotations_train_{FOLD}.json', dataDir)
-register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/valid/annotations_valid_{FOLD}.json', dataDir)
+register_coco_instances('sartorius_train',{}, f'{ANN_DIR}/annotations_train_{FOLD}.json', dataDir)
+register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/annotations_valid_{FOLD}.json', dataDir)
 metadata = MetadataCatalog.get('sartorius_train')
 train_ds = DatasetCatalog.get('sartorius_train')
 valid_ds = DatasetCatalog.get('sartorius_val')
