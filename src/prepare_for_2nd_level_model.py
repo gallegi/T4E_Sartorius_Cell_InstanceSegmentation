@@ -23,6 +23,10 @@ from tqdm import tqdm
 import argparse
 
 parser = argparse.ArgumentParser(description='Some arguments')
+parser.add_argument('--image_dir', type=str, default=f'data/images',
+                    help='Path to image folder')
+parser.add_argument('--annotation_dir', type=str, default=f'data/annotations_semi_supervised_round2',
+                    help='Path to annotation folder')
 parser.add_argument('--weights', type=str, default='models/pretrained_models/pseudo_round1_model.pth models/pretrained_models/pseudo_round2_model.pth',
                     help='Paths to weight separated by a space')
 
@@ -32,12 +36,11 @@ weight_list = args.weights.split(' ')
 print(f'Ensemble {len(weight_list)} models:')
 print(weight_list)
 
-ROOT_FOLDER = './'
-ANN_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/annotations'
-DATA_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/images'
+ANN_DIR = args.annotation_dir
+IMAGE_DIR = args.image_dir
 FOLD = 0
 FINAL_THRESH = [0.5, 0.7, 0.8]
-PKL_FOLDER = f'{ROOT_FOLDER}/data_for_2nd_level_model'
+PKL_FOLDER = f'data_for_2nd_level_model'
 
 
 def paste_masks_in_image(masks, boxes, image_shape, threshold=0.5):
@@ -111,7 +114,7 @@ def get_config(weight):
     cfg.MODEL.RESNETS.AVG_DOWN = False
     cfg.MODEL.RESNETS.BOTTLENECK_WIDTH = 64
 
-    cfg.merge_from_file(f"{ROOT_FOLDER}/configs/mask_rcnn_ResNeSt200.yaml")
+    cfg.merge_from_file(f"configs/mask_rcnn_ResNeSt200.yaml")
     
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 3  
     
@@ -130,9 +133,8 @@ def get_config(weight):
     
     return cfg
 
-
-dataDir=Path(DATA_DIR)
-register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/valid/annotations_valid_{FOLD}.json', dataDir)
+dataDir=Path(IMAGE_DIR)
+register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/annotations_valid_{FOLD}.json', dataDir)
 metadata = MetadataCatalog.get('sartorius_val')
 valid_ds = DatasetCatalog.get('sartorius_val')
 
