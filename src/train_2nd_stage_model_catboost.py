@@ -26,9 +26,8 @@ from utils.feature_engineer_2nd_level_model import get_features, calculate_max_I
 
 # VER = '5_ens_m1022_m1018'
 
-ROOT_FOLDER = './'
-ANN_DIR = f'{ROOT_FOLDER}/data'
-DATA_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/images'
+ANN_DIR = f'data'
+DATA_DIR = f'data/images'
 
 print('Training 2nd level model on the first half, and validate on the second half')
 
@@ -42,7 +41,7 @@ valid_ds1 = DatasetCatalog.get('sartorius_val_1')
 valid_ds2 = DatasetCatalog.get('sartorius_val_2')
 
 def get_pkl_folder():
-    return f'{ROOT_FOLDER}/data_for_2nd_level_model/'
+    return f'data_for_2nd_level_model/'
 
 
 train_df = pd.DataFrame()
