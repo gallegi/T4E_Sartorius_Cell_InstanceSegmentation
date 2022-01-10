@@ -1,3 +1,7 @@
+'''
+    Generate pickle files containing output prediction of MaskRCNN models
+    in order to training 2nd-level model
+'''
 import detectron2
 from pathlib import Path
 import random, cv2, os
@@ -42,12 +46,11 @@ FOLD = 0
 FINAL_THRESH = [0.5, 0.7, 0.8]
 PKL_FOLDER = f'data_for_2nd_level_model'
 
-
+# =============== Make detectron output raw pixel float mask =================
 def paste_masks_in_image(masks, boxes, image_shape, threshold=0.5):
     """
     Copy pasted from detectron2.layers.mask_ops.paste_masks_in_image and deleted thresholding of the mask
     """
-#     print(torch.unique(masks))
     assert masks.shape[-1] == masks.shape[-2], "Only square mask predictions are supported"
     N = len(masks)
     if N == 0:
@@ -76,13 +79,11 @@ def paste_masks_in_image(masks, boxes, image_shape, threshold=0.5):
     img_masks = torch.zeros(
         N, img_h, img_w, device=device, dtype=torch.float32
     )
-#     print(torch.unique(masks))
     for inds in chunks:
         masks_chunk, spatial_inds = _do_paste_mask(
             masks[inds, None, :, :], boxes[inds], img_h, img_w, skip_empty=device.type == "cpu"
         )
         img_masks[(inds,) + spatial_inds] = masks_chunk
-#     print(torch.unique(img_masks))
     return img_masks
 
 from typing import Any, Iterator, List, Union
@@ -100,9 +101,10 @@ def BitMasks__init__(self, tensor: Union[torch.Tensor, np.ndarray]):
     self.tensor = tensor
     
 detectron2.structures.masks.BitMasks.__init__.__code__ = BitMasks__init__.__code__
-
 detectron2.layers.mask_ops.paste_masks_in_image.__code__ = paste_masks_in_image.__code__
+# ==================================================================================
 
+# =========== Define functions for config ==========
 def get_config(weight):
     cfg = get_cfg()
     cfg.INPUT.MASK_FORMAT='bitmask'
@@ -132,13 +134,16 @@ def get_config(weight):
     cfg.TEST.AUG.FLIP = False
     
     return cfg
+# =======================================================
 
+# ====== Register datasets =======
 dataDir=Path(IMAGE_DIR)
 register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/annotations_valid_{FOLD}.json', dataDir)
 metadata = MetadataCatalog.get('sartorius_val')
 valid_ds = DatasetCatalog.get('sartorius_val')
+# ================================
 
-
+# ========== Load models ===========
 list_cfgs = []
 list_predictors = []
 
@@ -147,8 +152,9 @@ for weight in args.weights.split(' '):
     predictor = DefaultPredictor(cfg)
     list_cfgs.append(cfg)
     list_predictors.append(predictor)
+# ==================================
 
-
+# ========== Predict and save to pkl files ===========
 i = 0
 for d in tqdm(valid_ds, total=len(valid_ds)):
     name = d['file_name'].split('/')[-1]
@@ -160,6 +166,7 @@ for d in tqdm(valid_ds, total=len(valid_ds)):
         pickle.dump(outputs, f)
   
     i+=1
+# =====================================================
 
 
 

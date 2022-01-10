@@ -1,3 +1,6 @@
+'''
+    Support functions for post processing
+'''
 import pycocotools.mask as mask_util
 import numpy as np
 import torch
@@ -5,6 +8,9 @@ import torch
 import pycocotools.mask as mask_util
 
 def custom_nms(pred, nms_thresh=0.5):
+    '''
+        NMS by mask (calculate IOU base on mask pixels)
+    '''
     pred_masks = pred['instances'].pred_masks.detach().cpu().numpy()
     scores = pred['instances'].scores.detach().cpu().numpy()
     # print(pred_masks.dtype)
@@ -41,6 +47,7 @@ def custom_nms(pred, nms_thresh=0.5):
     return new_pred
 
 def post_process_output(cfg, outputs):
+    '''Perform nms by mask and filter out instances with too small area'''
     # filter by score
     pred_class = torch.mode(outputs['instances'].pred_classes)[0]
     

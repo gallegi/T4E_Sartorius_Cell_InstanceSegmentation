@@ -1,3 +1,6 @@
+'''
+    Train a segmentation model
+'''
 import torch
 import sys
 from utils.train_net import Trainer

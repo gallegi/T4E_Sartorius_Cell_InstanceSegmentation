@@ -1,3 +1,6 @@
+'''
+    Evaluate on the validation set using a single model
+'''
 import detectron2
 from pathlib import Path
 import random, cv2, os
@@ -38,18 +41,20 @@ FOLD = 0
 
 dataDir=Path(IMAGE_DIR)
 
+# ====== Register datasets =======
 cfg.INPUT.MASK_FORMAT='bitmask'
 register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/annotations_valid_{FOLD}.json', dataDir)
 metadata = MetadataCatalog.get('sartorius_val')
 valid_ds = DatasetCatalog.get('sartorius_val')
+# ================================
 
+# ======== Configuration =========
 cfg.MODEL.RESNETS.RADIX = 1
 cfg.MODEL.RESNETS.DEEP_STEM = False
 cfg.MODEL.RESNETS.AVD = False
 # Apply avg_down to the downsampling layer for residual path 
 cfg.MODEL.RESNETS.AVG_DOWN = False
 cfg.MODEL.RESNETS.BOTTLENECK_WIDTH = 64
-
 
 cfg.merge_from_file(f"configs/mask_rcnn_ResNeSt200.yaml")
 cfg.DATASETS.TRAIN = ("sartorius_train",)
@@ -61,17 +66,20 @@ cfg.MODEL.ROI_HEADS.NUM_CLASSES = 3
 cfg.INPUT.MIN_SIZE_TEST = 1024
 cfg.INPUT.MAX_SIZE_TEST = 2000
 
-
 cfg.MODEL.WEIGHTS = args.weight
 cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.99
 cfg.CUSTOM = CfgNode()
 cfg.CUSTOM.NMS_THRESH = [0.1,0.1,0.1]
 cfg.TEST.DETECTIONS_PER_IMAGE = 10000
+# ================================
 
-
+# ========== Load model ===========
 predictor = DefaultPredictor(cfg)
-
 cfg.CUSTOM.THRESHOLDS = [0.5,0.7,0.8]
+# =================================
+
+# ========== Evaluate ===========
+print('Evaluating on valid data ....')
 
 list_APs = []
 list_TPs = []
@@ -110,7 +118,4 @@ print(result_df.groupby('cell_type').AP.sum() / len(result_df))
 
 print('\nResult (average precision IOU@0.5:0.95):')
 print(result_df.AP.mean())
-
-# outpath = f'{ROOT_FOLDER}/analysis_log/{cfg.OUTPUT_DIR.split("/")[-1]}/valid_results.csv'
-# os.makedirs(os.path.dirname(outpath),exist_ok=True)
-# result_df.to_csv(outpath, index=False)
+# ===================================

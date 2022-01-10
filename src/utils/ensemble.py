@@ -1,3 +1,6 @@
+'''
+    Support functions for ensembling instance segmentation models
+'''
 import copy
 from detectron2.data.detection_utils import read_image
 from detectron2.modeling.test_time_augmentation import GeneralizedRCNNWithTTA, DatasetMapperTTA
@@ -42,6 +45,7 @@ def turn_off_roi_heads(model, attrs):
                 setattr(roi_heads, attr, old[attr])
 
 def model_batch_forward(model, inputs, instances=[None]):
+    '''Forward model to obtain roi box detection or final mask'''
     outputs = model.inference(inputs, 
                    instances if instances[0] is not None else None,
                    do_postprocess=False)
@@ -49,6 +53,7 @@ def model_batch_forward(model, inputs, instances=[None]):
 
 def merge_detections(all_boxes, all_scores, all_classes, shape_hw, num_classes=3, 
                      box_nms_thresh=0.99, max_detection_per_im=10000):
+    '''Merge bbox predictions by concatenating all and performing NMS'''
     # select from the union of all results
     num_boxes = len(all_boxes)
     
@@ -69,6 +74,7 @@ def merge_detections(all_boxes, all_scores, all_classes, shape_hw, num_classes=3
     return merged_instances
 
 def rescale_detected_boxes(augmented_inputs, merged_instances, tfms):
+    '''Rescale bbox coordinates and sizes with respect to original image's size'''
     augmented_instances = []
     for input, tfm in zip(augmented_inputs, tfms):
         # Transform the target box to the augmented image's coordinate space
@@ -85,6 +91,7 @@ def rescale_detected_boxes(augmented_inputs, merged_instances, tfms):
     return augmented_instances
 
 def reduce_pred_masks(outputs, tfms):
+    '''Average mask outputs of all models'''
     # Should apply inverse transforms on masks.
     # We assume only resize & flip are used. pred_masks is a scale-invariant
     # representation, so we handle flip specially
@@ -98,6 +105,7 @@ def reduce_pred_masks(outputs, tfms):
 def ensemble(inp_dict, list_configs, list_predictors, 
             mask_nms_thresh=0.1, max_detection_per_im=10000,
             conf_thresh=[0.3,0.5,0.6]):
+    '''Master funtion for ensembling'''
     # read image
     inp = copy.copy(inp_dict)
     image = read_image(inp.pop("file_name"), list_predictors[0].model.input_format)

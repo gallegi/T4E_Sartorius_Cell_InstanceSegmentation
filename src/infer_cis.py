@@ -1,3 +1,6 @@
+'''
+    Run end-to-end inference on an image
+'''''
 import detectron2
 from pathlib import Path
 import random, cv2, os
@@ -42,7 +45,7 @@ DATA_DIR = f'{ROOT_FOLDER}/data/annotation_semisupervised_round2/images'
 FOLD = 0
 FINAL_THRESH = [0.5, 0.7, 0.8]
 
-
+# ============ Define function for config ===========
 def get_config(weight):
     cfg = get_cfg()
     cfg.INPUT.MASK_FORMAT='bitmask'
@@ -72,14 +75,9 @@ def get_config(weight):
     cfg.TEST.AUG.FLIP = False
     
     return cfg
+# =======================================================
 
-
-dataDir=Path(DATA_DIR)
-register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/valid/annotations_valid_{FOLD}.json', dataDir)
-metadata = MetadataCatalog.get('sartorius_val')
-valid_ds = DatasetCatalog.get('sartorius_val')
-
-
+# ========== Load models ===========
 list_cfgs = []
 list_predictors = []
 
@@ -88,7 +86,9 @@ for weight in args.weights.split(' '):
     predictor = DefaultPredictor(cfg)
     list_cfgs.append(cfg)
     list_predictors.append(predictor)
+# ==================================
 
+# ========== Run inference on an image ===========
 im = cv2.imread(args.image)
 input_dict = {'file_name':args.image, 'height':520, 'width':704}
 outputs =  ensemble(input_dict, 
@@ -106,3 +106,4 @@ out_path = os.path.join('demo_outputs/', out_name)
 
 draw = out_pred.get_image()[:, :, ::-1]
 cv2.imwrite(out_path, draw)
+# ==================================================

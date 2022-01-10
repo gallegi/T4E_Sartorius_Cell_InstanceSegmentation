@@ -1,3 +1,7 @@
+'''
+    Train 2nd-level catboost model, the input features of which are 
+    confidence score, bbox features, morphology features, ...
+'''
 import numpy as np
 import detectron2
 from pathlib import Path
@@ -24,29 +28,26 @@ import seaborn as sns
 from utils.metric_by_outputs import calculate_AP
 from utils.feature_engineer_2nd_level_model import get_features, calculate_max_IOU_with_gt
 
-# VER = '5_ens_m1022_m1018'
-
 ANN_DIR = f'data'
 DATA_DIR = f'data/images'
 
-print('Training 2nd level model on the first half, and validate on the second half')
+print('Training 2nd-level model on the first half, and validate on the second half')
 
+# =========== Register dataset ==========
 dataDir=Path(DATA_DIR)
-
 register_coco_instances('sartorius_val_1',{}, f'{ANN_DIR}/val_fold0_split_part1.json', dataDir)
 register_coco_instances('sartorius_val_2',{}, f'{ANN_DIR}/val_fold0_split_part2.json', dataDir)
 
 metadata = MetadataCatalog.get('sartorius_val_1')
 valid_ds1 = DatasetCatalog.get('sartorius_val_1')
 valid_ds2 = DatasetCatalog.get('sartorius_val_2')
+# =======================================
 
+# ========== Generate features ==========
 def get_pkl_folder():
     return f'data_for_2nd_level_model/'
 
-
 train_df = pd.DataFrame()
-
-i = 0
 for d in tqdm(valid_ds1, total=len(valid_ds1)):
     PKL_FOLDER = get_pkl_folder()
     path = f'{PKL_FOLDER}/{d["image_id"]}.pkl'
@@ -66,14 +67,7 @@ for d in tqdm(valid_ds1, total=len(valid_ds1)):
     
     train_df = pd.concat([train_df, features], axis=0)
 
-    # i+=1
-    # if i == 10:
-    #     break
-
-
 valid_df = pd.DataFrame()
-
-i = 0
 for d in tqdm(valid_ds2, total=len(valid_ds2)):
     PKL_FOLDER = get_pkl_folder()
     path = f'{PKL_FOLDER}/{d["image_id"]}.pkl'
@@ -92,14 +86,11 @@ for d in tqdm(valid_ds2, total=len(valid_ds2)):
     
     valid_df = pd.concat([valid_df, features], axis=0)
 
-    # i+=1
-    # if i == 10:
-    #     break
-
 print('Number of instance on train set:', len(train_df))
 print('Number of instance on valid set:', len(valid_df))
+# ========================================
 
-
+# ============= Exclude some ill features ============
 excluded = ['image_id', 'iou', 'instance_num']
 X_cols = []
 for col in train_df.columns:
@@ -110,8 +101,7 @@ y_col = 'iou'
 # detect cols with many nulls (> 30%)
 null_count = train_df[X_cols].isnull().mean().sort_values(ascending=False)
 cols_many_nulls = null_count[null_count > 0.3].index.tolist()
-print(len(cols_many_nulls))
-
+print('Number of features with null percentage > 30%:', len(cols_many_nulls))
 
 # detect cols with many same values (>90%)
 max_counts = []
@@ -124,11 +114,12 @@ for col in X_cols:
 
 freq = pd.DataFrame({'feature':X_cols, 'max_freq':max_counts})
 cols_same_values = freq[freq.max_freq > 0.9].feature.tolist()
-print(len(cols_same_values))
+print('Number of features with a constant value', len(len(cols_same_values)))
 
 X_cols2 = [col for col in X_cols if col not in cols_many_nulls and col not in cols_same_values]
+# =======================================================
 
-
+# =============== Train and valid 2nd-level model catboost ==============
 model = CatBoostRegressor(n_estimators=700, max_depth=2, 
                         learning_rate=0.02, reg_lambda=1,
                         loss_function='RMSE',
@@ -176,3 +167,4 @@ with open(os.path.join('2nd_level_model/', f'catboost.pkl'), 'wb') as f:
     pickle.dump(model, f)
 
 pd.DataFrame(X_cols2, columns=['features']).to_csv(os.path.join('2nd_level_model/', f'features.csv'), index=False)
+# ==========================================================================

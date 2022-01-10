@@ -1,3 +1,6 @@
+'''
+    Evaluate on validation set using the ensemble of 2 or more models
+'''
 import detectron2
 from pathlib import Path
 import random, cv2, os
@@ -40,7 +43,7 @@ IMAGE_DIR = args.image_dir
 FOLD = 0
 FINAL_THRESH = [0.5, 0.7, 0.8]
 
-
+# =========== Define functions for config ==========
 def get_config(weight):
     cfg = get_cfg()
     cfg.INPUT.MASK_FORMAT='bitmask'
@@ -70,14 +73,16 @@ def get_config(weight):
     cfg.TEST.AUG.FLIP = False
     
     return cfg
+# =======================================================
 
-
+# ====== Register datasets =======
 dataDir=Path(IMAGE_DIR)
-
 register_coco_instances('sartorius_val',{}, f'{ANN_DIR}/annotations_valid_{FOLD}.json', dataDir)
 metadata = MetadataCatalog.get('sartorius_val')
 valid_ds = DatasetCatalog.get('sartorius_val')
+# ================================
 
+# ========== Load models ===========
 list_cfgs = []
 list_predictors = []
 
@@ -86,7 +91,10 @@ for weight in args.weights.split(' '):
     predictor = DefaultPredictor(cfg)
     list_cfgs.append(cfg)
     list_predictors.append(predictor)
+# ==================================
 
+# ========== Evaluate ===========
+print('Evaluating on valid data ....')
 
 list_APs = []
 list_TPs = []
@@ -129,5 +137,5 @@ print(result_df.groupby('cell_type').AP.sum() / len(result_df))
 
 print('\nResult (average precision IOU@0.5:0.95):')
 print(result_df.AP.mean())
-
+# =================================
 

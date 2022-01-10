@@ -1,4 +1,7 @@
 
+'''
+    Support functions for 2nd-level feature engineering
+'''
 import pandas as pd
 import pycocotools.mask as mask_util
 from tqdm import tqdm
@@ -7,6 +10,7 @@ import numpy as np
 import cv2
 
 def calculate_max_IOU_with_gt(targ, pred):
+    '''Calculate IOU between predicted instances and target instances'''
     pred_masks = pred['instances'].pred_masks >= 0.5
     enc_preds = [mask_util.encode(np.asarray(p, order='F')) for p in pred_masks]
     enc_targs = list(map(lambda x:x['segmentation'], targ))
@@ -19,6 +23,7 @@ def print_log(log):
         print(k, log[k])
         
 def get_overlapping_features(pred):
+    '''Compute features representing overlapping characteristics of each instance'''
     pred_masks = pred['instances'].pred_masks >= 0.5
     enc_preds = [mask_util.encode(np.asarray(p, order='F')) for p in pred_masks]
     ious = mask_util.iou(enc_preds, enc_preds, [0]*len(enc_preds))
@@ -26,6 +31,7 @@ def get_overlapping_features(pred):
              ious.std(axis=1), (ious > 0).sum(axis=1)
 
 def get_contour_features(pred):
+    '''Get some morphology features'''
     masks = (pred['instances'].pred_masks.numpy() >= 0.5).astype('uint8')
     
     data_dict = {
@@ -83,6 +89,7 @@ def get_contour_features(pred):
     return pd.DataFrame(data_dict)
 
 def get_pixel_scores_features(outputs):
+    '''Get features related to mask scores at pixel level'''
     pred_masks = outputs['instances'].pred_masks
     pred_masks_non_zeros = [mask[mask > 0] for mask in pred_masks]
     min_pscores = [mask.min().item() for mask in pred_masks_non_zeros]
@@ -106,6 +113,7 @@ def get_pixel_scores_features(outputs):
     return pd.DataFrame(ret)
 
 def get_image_pixel_features(im, outputs):
+    '''Get features related to pixels on the original images'''
     pred_masks = outputs['instances'].pred_masks
     pred_masks_binary = [mask > 0.5 for mask in pred_masks]
     im_masks = [im[mask,0] for mask in pred_masks_binary]
@@ -131,6 +139,7 @@ def get_image_pixel_features(im, outputs):
     return pd.DataFrame(ret)
 
 def get_kdtree_nb_features(single_features):
+    '''Get features related to neighboring relation ship determine by distance'''
     cols = ['centroid_x', 'centroid_y']
     X = single_features[cols]
     tree = KDTree(X)  
@@ -175,6 +184,7 @@ def get_kdtree_nb_features(single_features):
     return pd.DataFrame(ret)    
     
 def get_features(im, outputs):
+    '''Master function for generating features'''
     pred_masks = outputs['instances'].pred_masks
     
     mask_areas = (pred_masks >= 0.5).sum(axis=(1,2))
@@ -226,6 +236,7 @@ def get_features(im, outputs):
 FEATURES_TO_AGG = ['box_score', 'mask_area', 'width', 'height']
 
 def get_aggregation_features(features):
+    '''Generate aggregation features by some other fields'''
     ret = features.copy()
     for agg_scheme in ['image_id', 'cell_type']:
         agg_ft = features.groupby(agg_scheme)[FEATURES_TO_AGG].agg(['mean', 'median'])
