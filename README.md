@@ -1,6 +1,6 @@
 # 1. About the challenge
 - The goal of Sartorius - Cell Instance Segmentation challenge on Kaggle is to segment individual neuronal cells in microscopic images. 
-- Note that we need to distinguish among different cells as separated instances, you can refer to [this link](https://serengetitech.com/tech/deep-learning-instance-segmentation/) if not familiar with instance segmentation task. This is fundamentally different from semantic segmentation when only a binary mask is predicted to mark whether a pixel belongs to a foreground class or background. 
+- Note that we need to distinguish among different cells as separated instances, you can refer to [this link](https://serengetitech.com/tech/deep-learning-instance-segmentation/) if not familiar with instance segmentation task. This is fundamentally different from semantic segmentation where only a binary mask is predicted to mark whether a pixel belongs to a foreground class or background. 
 ![Challenge image](/materials/challenge_img.png "Image taken from the challenge homepage")
 
 
@@ -13,7 +13,10 @@ The ensembling technique used to combine 2 final segmentation model was conducte
 ![Ensemble](/materials/EnsembleFlow2.jpg "Ensembling technique")
 
 # 3. How to run the code
-We have tried many different models such as PointRend, MaskRCNN Swin Transformer, CellPose, GCNet, etc. However the final solution is the ensembling prediction of 2 MaskRCNN ResNeSt200 model, followed by a 2nd-level catboost post-processing model. Thus, to keep everything simple, we only provide the training and inference code of MaskRCNN ResNeSt200 and the 2nd-level catboost model.
+We have tried many different models such as PointRend, MaskRCNN Swin Transformer, CellPose, GCNet, etc. However the final solution is the ensembling prediction of 2 MaskRCNN ResNeSt200 model, followed by a 2nd-level catboost post-processing model. Thus, to keep everything simple, we only provide the training, evaluation and inference code of MaskRCNN ResNeSt200 and the 2nd-level catboost model.
+
+For a quick demo on colab: https://colab.research.google.com/drive/1X2gI5jW5CrjY_gH3Cp5-oTG9c8pY47Tt?usp=sharing
+
 ## 3.1. Install dependecies
 ````
     bash install_libs.sh
