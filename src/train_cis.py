@@ -26,6 +26,8 @@ FOLD = 0
 parser = argparse.ArgumentParser(description='Some arguments')
 parser.add_argument('--image_dir', type=str, default=f'data/images',
                     help='Path to image folder')
+parser.add_argument('--batch_size', type=int, default=1,
+                    help='Training batch size')
 parser.add_argument('--annotation_dir', type=str, default=f'data/annotations_semi_supervised_round2',
                     help='Path to annotation folder')
 parser.add_argument('--out_dir', type=str, default=f'models/maskrcnn_ResNeSt200_pseudo_round2_fold{FOLD}',
@@ -36,6 +38,7 @@ cfg = get_cfg()
 ANN_DIR = args.annotation_dir
 IMAGE_DIR = args.image_dir
 cfg.OUTPUT_DIR = args.out_dir
+BATCH_SIZE = args.batch_size
 
 dataDir=Path(IMAGE_DIR)
 
@@ -61,7 +64,7 @@ cfg.DATASETS.TRAIN = ("sartorius_train",)
 cfg.DATASETS.TEST = ("sartorius_train", "sartorius_val")
 cfg.DATALOADER.NUM_WORKERS = 4
 cfg.MODEL.WEIGHTS = "https://livecell-dataset.s3.eu-central-1.amazonaws.com/LIVECell_dataset_2021/models/Anchor_based/ALL/LIVECell_anchor_based_model.pth"
-cfg.SOLVER.IMS_PER_BATCH = 1
+cfg.SOLVER.IMS_PER_BATCH = BATCH_SIZE
 cfg.SOLVER.BASE_LR = 0.003
 cfg.SOLVER.MAX_ITER = 30000    
 cfg.SOLVER.CHECKPOINT_PERIOD = 1000
