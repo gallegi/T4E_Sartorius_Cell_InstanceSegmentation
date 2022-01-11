@@ -53,7 +53,7 @@ Round-1 pseudo training:
     python src/train_cis.py --image_dir data/images \
                             --batch_size 1 \
                             --annotation_dir data/annotations_semi_supervised_round1 \
-                            --out_dir models/maskrcnn_ResNeSt200_pseudo_round1_fold0 \
+                            --out_dir models/maskrcnn_ResNeSt200_pseudo_round1_fold0 
 ````
 
 Round-2 pseudo training:
@@ -61,7 +61,7 @@ Round-2 pseudo training:
     python src/train_cis.py --image_dir data/images \
                             --batch_size 1 \
                             --annotation_dir data/annotations_semi_supervised_round2 \
-                            --out_dir models/maskrcnn_ResNeSt200_pseudo_round2_fold0 \
+                            --out_dir models/maskrcnn_ResNeSt200_pseudo_round2_fold0 
 ````
 ## 3.6. Evaluate single segmentation model
 ````
