@@ -38,7 +38,9 @@ We have tried many different models such as PointRend, MaskRCNN Swin Transformer
                                     --2nd_level_model 2nd_level_model/catboost.pkl \
                                     --2nd 2nd_level_features 2nd_level_model/features.csv
 ````
-Output image will be saved in demo_outputs/ folder: # TODO display image
+Output image will be saved in demo_outputs/ folder. It should look like this:
+
+![Demo output](demo_outputs/7ae19de7bc2a.png "Demo output")
 
 ## 3.5. Train instance segmentation models
 ````
@@ -93,7 +95,7 @@ Round-2 pseudo training:
     Default: python src/prepare_for_2nd_level_model.py \
                     --image_dir data/images \
                     --annotation_dir data/annotations_semi_supervised_round2 \
-                    --weight 'models/pretrained_models/pseudo_round1_model.pth models/pretrained_models/pseudo_round2_model.pth'
+                    --weights 'models/pretrained_models/pseudo_round1_model.pth models/pretrained_models/pseudo_round2_model.pth'
 ````
 Pickle output files will be saved inside folder: data_for_2nd_level_model/
 ### 3.8.1. Train catboost model
