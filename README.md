@@ -1,3 +1,6 @@
+Source code of the 7th place solution (gold medal) for [Sartorius - Cell Instance Segmentation](https://www.kaggle.com/c/sartorius-cell-instance-segmentation/leaderboard) from team Train4Ever.
+
+
 # 1. About the challenge
 - The goal of Sartorius - Cell Instance Segmentation challenge on Kaggle is to segment individual neuronal cells in microscopic images. 
 - Note that we need to distinguish among different cells as separated instances, you can refer to [this link](https://serengetitech.com/tech/deep-learning-instance-segmentation/) if not familiar with instance segmentation task. This is fundamentally different from semantic segmentation where only a binary mask is predicted to mark whether a pixel belongs to a foreground class or background. 
